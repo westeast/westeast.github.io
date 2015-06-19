@@ -1,6 +1,6 @@
 ### 我的博客
 
-地址：[http://lamper.us](http://lamper.us)
+地址：[http://westeast.github.io](http://westeast.github.io)
 
 ### 安装说明
 
