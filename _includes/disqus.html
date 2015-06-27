@@ -20,17 +20,13 @@
         var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
         var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
         if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
-            addScript("http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=cyrQu5FDG&conf=prod_5e15624c0990f0d2b25da77ccca312d3",'changyan_mobile_js');
+            addScript("http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=cyrQu5FDG&conf=prod_5e15624c0990f0d2b25da77ccca312d3",'changyan_mobile_js',0);
         } else {
-            addScript('http://changyan.sohu.com/upload/changyan.js',0);
-            window.changyan.api.config({
-                appid: 'cyrQu5FDG',
-                conf: 'prod_5e15624c0990f0d2b25da77ccca312d3'
-            });
+            addScript('http://changyan.sohu.com/upload/changyan.js',0,1);
         }
     }
 
-    function addScript(src,id){
+    function addScript(src,id,onload){
         var head= document.getElementsByTagName('head')[0];
         var script= document.createElement('script');
         script.type= 'text/javascript';
@@ -38,6 +34,16 @@
         script.charset = 'utf-8';
         if(id){
             script.id = id;
+        }
+        if(onload){
+            script.onload = script.onreadystatechange = function() {
+                if (!this.readyState || this.readyState === "loaded" ||    this.readyState === "complete" ) {
+                    window.changyan.api.config({
+                        appid: 'cyrQu5FDG',
+                        conf: 'prod_5e15624c0990f0d2b25da77ccca312d3'
+                    });
+                    script.onload = script.onreadystatechange = null;
+                } };
         }
         head.appendChild(script);
     }
