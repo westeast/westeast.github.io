@@ -21,12 +21,12 @@
         var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
         if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
             addScript("http://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=cyrQu5FDG&conf=prod_5e15624c0990f0d2b25da77ccca312d3",'changyan_mobile_js');
+        } else {
+            addScript('http://changyan.sohu.com/upload/changyan.js',0);
             window.changyan.api.config({
                 appid: 'cyrQu5FDG',
                 conf: 'prod_5e15624c0990f0d2b25da77ccca312d3'
             });
-        } else {
-            addScript('http://changyan.sohu.com/upload/changyan.js',0);
         }
     }
 
