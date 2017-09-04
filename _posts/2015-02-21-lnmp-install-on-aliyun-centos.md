@@ -1,8 +1,9 @@
 ---
 layout: post
 title: lnmp-install-on-aliyun-centos
+subtitle: lnmp-install-on-aliyun-centos
 category: lnmp
-tags: linux,php
+tags: [linux, php]
 keywords: linux,php,mysql,nginx
 description: lnmp集成环境安装过程
 ---

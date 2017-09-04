@@ -1,10 +1,10 @@
 ---
 layout: post
 title: 我与工具--阅读和知识管理
-category: 工具
-tags: Tool
-keywords: 阅读,知识管理,工具
-description: 每天都会花很多时间用来处理订阅的RSS、微博、微信等消息，选择合适的工具可以帮助提升阅读效率
+subtitle: 我与工具--阅读和知识管理
+tags: [Tool]
+image: /img/share/github-jekyll.png
+share-img: https://westeast.github.io/img/share/github-jekyll.png
 ---
 
 ## 1.信息来源

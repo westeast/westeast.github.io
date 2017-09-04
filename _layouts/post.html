@@ -1,20 +1,40 @@
 ---
 layout: base
 ---
-<div class="row">
-  <div class="col-md-12 aside3-title">
-    <br>
-    <h2 id="#identifier">{{ page.title }}</h2>
-    {{ page.date | date:"%Y年%m月%d日" }}
-  </div>
-  <div class="col-md-12 aside3-content">
-    {% include content.html %}
-    <hr>
-    <div id="content">
-      {{ content }}
+
+{% include header.html type="post" %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      <article role="main" class="blog-post">
+        {{ content }}
+      </article>
+
+      {% if page.social-share %}
+        {% include social-share.html %}
+      {% endif %}
+
+      <ul class="pager blog-pager">
+        {% if page.previous.url %}
+        <li class="previous">
+          <a href="{{ page.previous.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{ page.previous.title }}">&larr; 上一篇</a>
+        </li>
+        </section>
+        {% endif %}
+        {% if page.next.url %}
+        <li class="next">
+          <a href="{{ page.next.url | prepend: site.baseurl | replace: '//', '/' }}" data-toggle="tooltip" data-placement="top" title="{{ page.next.title }}">下一篇 &rarr;</a>
+        </li>
+        {% endif %}
+      </ul>
+
+      {% if page.comments %}
+        <div class="duoshuo-comments">
+          {% include duoshuo.html %}
+        </div>
+      {% endif %}
     </div>
-    <hr>
-    {% include disqus.html %}
   </div>
 </div>
-
