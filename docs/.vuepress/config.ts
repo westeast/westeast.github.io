@@ -30,8 +30,8 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     nav: [
       { text: '首页', link: '/' },
       {
-        text: '前端',
-        link: '/web/', //目录页链接，此处link是vdoing主题新增的配置项，有二级导航时，可以点击一级导航跳到目录页
+        text: '编码',
+        link: '/coding/', //目录页链接，此处link是vdoing主题新增的配置项，有二级导航时，可以点击一级导航跳到目录页
         items: [
           // 说明：以下所有link的值只是在相应md文件头部定义的永久链接（不是什么特殊编码）。另外，注意结尾是有斜杠的
           {
@@ -64,13 +64,15 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 text: 'JS设计模式总结',
                 link: '/pages/4643cd/',
               },
+              { text: 'HTML', link: '/pages/8309a5b876fc95e3/' },
+              { text: 'CSS', link: '/pages/0a83b083bdf257cb/' },
             ],
           },
         ],
       },
       {
-        text: '页面',
-        link: '/ui/',
+        text: '投资',
+        link: '/invest/',
         items: [
           { text: 'HTML', link: '/pages/8309a5b876fc95e3/' },
           { text: 'CSS', link: '/pages/0a83b083bdf257cb/' },
@@ -119,7 +121,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     ],
     sidebarDepth: 2, // 侧边栏显示深度，默认1，最大2（显示到h3标题）
     logo: '/img/logo.png', // 导航栏logo
-    repo: 'xugaoyi/vuepress-theme-vdoing', // 导航栏右侧生成Github链接
+    repo: 'westeast/westeast.github.io', // 导航栏右侧生成Github链接
     searchMaxSuggestions: 10, // 搜索结果显示最大数
     lastUpdated: '上次更新', // 开启更新时间，并配置前缀文字   string | boolean (取值为git提交时间)
     docsDir: 'docs', // 编辑的文件夹
@@ -166,15 +168,15 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 文章默认的作者信息，(可在md文件中单独配置此信息) string | {name: string, link?: string}
     author: {
-      name: 'xugaoyi', // 必需
-      link: 'https://github.com/xugaoyi', // 可选的
+      name: 'westeast', // 必需
+      link: 'https://github.com/westeast.github.io', // 可选的
     },
 
     // 博主信息 (显示在首页侧边栏)
     blogger: {
       avatar: 'https://jsd.cdn.zzko.cn/gh/xugaoyi/image_store/blog/20200103123203.jpg',
-      name: 'Evan Xu',
-      slogan: '前端界的小学生',
+      name: 'Hook Zou',
+      slogan: '技术投资界的农民, Stay Hungry, Stay Foolish！',
     },
 
     // 社交图标 (显示于博主信息栏和页脚栏。内置图标：https://doc.xugaoyi.com/pages/a20ce8/#social)
