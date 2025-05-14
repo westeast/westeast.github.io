@@ -76,9 +76,9 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         items: [
           { text: '投资基础', link: '/pages/546a68/' },
           { text: '宏观分析', link: '/pages/546a68/' },
-          { text: '大佬观点', link: '/pages/546a68/' },
+          { text: '大佬观点', link: '/pages/ab2b0d/' },
           { text: 'AI+量化', link: '/pages/546a68/' },
-          { text: '加密货币', link: '/pages/546a68/' },
+          { text: '加密货币', link: '/pages/5a377a/' },
         ],
       },
       {
@@ -214,8 +214,8 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     // 扩展自动生成frontmatter。（当md文件的frontmatter不存在相应的字段时将自动添加。不会覆盖已有的数据。）
     extendFrontmatter: {
       author: {
-        name: 'xugaoyi',
-        link: 'https://github.com/xugaoyi'
+        name: 'westeast', // 必需
+        link: 'https://github.com/westeast.github.io', // 可选的
       }
     },
 
