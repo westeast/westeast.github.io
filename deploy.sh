@@ -13,6 +13,7 @@ push_branch=master # 推送的分支
 npm run build
 
 # 进入生成的文件夹
+cp CNAME $dist_path
 cd $dist_path
 
 git init

@@ -35,6 +35,7 @@ jobs:
           deploy_branch=master
           yarn
           yarn build
+          cp CNAME docs/.vuepress/dist
           cd docs/.vuepress/dist
           git config --global init.defaultBranch $deploy_branch
           git init
