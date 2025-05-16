@@ -75,9 +75,9 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         link: '/invest/',
         items: [
           { text: '投资基础', link: '/pages/546a68/' },
-          { text: '宏观分析', link: '/pages/546a68/' },
+          { text: '宏观分析', link: '/pages/a6e09a/' },
           { text: '大佬观点', link: '/pages/ab2b0d/' },
-          { text: 'AI+量化', link: '/pages/546a68/' },
+          { text: 'AI+量化', link: '/pages/8b9adc/' },
           { text: '加密货币', link: '/pages/5a377a/' },
         ],
       },
