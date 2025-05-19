@@ -27,21 +27,48 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build
-        run: |
-          yarn
-          yarn build
-
       - name: Checkout master branch to a temporary directory
         uses: actions/checkout@v3
         with:
           ref: master
           path: master-branch
 
-      - name: Copy built files to master branch directory
+      - name: Build with incremental update
         run: |
-          cp -r docs/.vuepress/dist/* master-branch/
+          # Install dependencies
+          yarn
+
+          # Get last build timestamp from master branch
+          LAST_BUILD_FILE="master-branch/.last_build_timestamp"
+          if [ -f "$LAST_BUILD_FILE" ]; then
+            LAST_BUILD_TIME=$(cat "$LAST_BUILD_FILE")
+          else
+            LAST_BUILD_TIME=0
+          fi
+
+          # Create temporary directory for docs
+          TEMP_DIR="temp_docs"
+          rm -rf "$TEMP_DIR"
+          cp -r docs "$TEMP_DIR"
+
+          # Remove unchanged markdown files
+          find "$TEMP_DIR" -name "*.md" | while read file; do
+            MOD_TIME=$(stat -c %Y "$file")
+            if [ "$MOD_TIME" -le "$LAST_BUILD_TIME" ]; then
+              rm "$file"
+            fi
+          done
+
+          # Build using vuepress
+          yarn vuepress build "$TEMP_DIR"
+
+          # Copy built files to master-branch
+          cp -r "$TEMP_DIR/.vuepress/dist/*" master-branch/
           cp CNAME master-branch/
+
+          # Update last build timestamp
+          CURRENT_TIME=$(date +%s)
+          echo "$CURRENT_TIME" > master-branch/.last_build_timestamp
 
       - name: Commit and push to master branch
         run: |
