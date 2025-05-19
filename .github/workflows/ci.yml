@@ -11,13 +11,16 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         node-version: [18.x]
 
     steps:
-      - name: Checkout
+      - name: Checkout develop branch
         uses: actions/checkout@v3
+        with:
+          ref: develop
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -28,30 +31,23 @@ jobs:
         run: |
           yarn
           yarn build
-          cp CNAME docs/.vuepress/dist
 
-      - name: Checkout master branch
+      - name: Checkout master branch to a temporary directory
         uses: actions/checkout@v3
         with:
-          branch: master
-          path: master  # 将 master 分支检出到 master 子目录
+          ref: master
+          path: master-branch
 
-      - name: Update and Deploy to master
+      - name: Copy built files to master branch directory
         run: |
-          # 进入 master 目录并清理除 .git 外的所有文件
-          cd master
-          find . -mindepth 1 -maxdepth 1 -name ".git" -o -exec rm -rf {} \;
+          cp -r docs/.vuepress/dist/* master-branch/
+          cp CNAME master-branch/
 
-          # 复制构建后的文件
-          cp -r ../docs/.vuepress/dist/* .
-
-          # 配置 Git 用户信息
-          git config --local user.name "GitHub Actions"
-          git config --local user.email "actions@github.com"
-
-          # 提交更改
-          git add -A
-          git commit -m "Update master with latest build from develop branch"
-
-          # 推送更改（非强制）
+      - name: Commit and push to master branch
+        run: |
+          cd master-branch
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git add .
+          git commit -m "auto deploy from develop, $(git describe --all --always --long)"
           git push origin master
