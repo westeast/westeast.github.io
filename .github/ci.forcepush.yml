@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout develop branch
+        uses: actions/checkout@v3
+        with:
+          ref: develop
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        run: |
+          yarn
+          yarn build
+
+      - name: Checkout master branch to a temporary directory
+        uses: actions/checkout@v3
+        with:
+          ref: master
+          path: master-branch
+
+      - name: Copy built files to master branch directory
+        run: |
+          cp -r docs/.vuepress/dist/* master-branch/
+          cp CNAME master-branch/
+
+      - name: Commit and push to master branch
+        run: |
+          cd master-branch
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+          git add .
+          git commit -m "auto deploy from develop, $(git describe --all --always --long)"
+          git push origin master
+
