@@ -59,7 +59,7 @@ jobs:
           done
 
           # Run build
-          yarn build --cache
+          yarn build
 
           # Debug: Check build output directory
           echo "Checking build output directory:"
