@@ -1,87 +1,22 @@
-name: CI
+## 利用GitHub Actions每天定时给百度推送链接，提高收录率 ##
 
+name: baiduPush
+
+# 两种触发方式：一、push代码，二、每天国际标准时间23点（北京时间+8即早上7点）运行
 on:
   push:
-    branches:
-      - develop
+  schedule:
+    - cron: '0 23 * * *' # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/events-that-trigger-workflows#scheduled-events-schedule
 
-env:
-  TZ: Asia/Shanghai
+# on:
+#   schedule:
+#     - cron: '*/5 * * * *' # 每5分钟一次，测试用
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
+  bot:
+    runs-on: ubuntu-latest # 运行环境为最新版的Ubuntu
     steps:
-      - name: Checkout develop branch
-        uses: actions/checkout@v3
-        with:
-          ref: develop
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Checkout master branch to a temporary directory
-        uses: actions/checkout@v3
-        with:
-          ref: master
-          path: master-branch
-
-      - name: Build with incremental update
-        run: |
-          # Install dependencies
-          yarn install
-
-          # Get last build timestamp from master branch
-          LAST_BUILD_FILE="master-branch/.last_build_timestamp"
-          if [ -f "$LAST_BUILD_FILE" ]; then
-            LAST_BUILD_TIME=$(cat "$LAST_BUILD_FILE")
-          else
-            LAST_BUILD_TIME=0
-          fi
-
-          # Create backup directory for unchanged Markdown files
-          BACKUP_DIR="backup_md"
-          mkdir -p "$BACKUP_DIR"
-
-          # Move unchanged Markdown files to backup directory
-          find docs -name "*.md" | while read file; do
-            MOD_TIME=$(stat -c %Y "$file")
-            if [ "$MOD_TIME" -le "$LAST_BUILD_TIME" ]; then
-              mv "$file" "$BACKUP_DIR/"
-            fi
-          done
-
-          # Run build
-          yarn build --cache
-
-          # Debug: Check build output directory
-          echo "Checking build output directory:"
-          ls -la docs/.vuepress/dist || echo "Output directory not found!"
-
-          # Restore backed-up Markdown files
-          mv "$BACKUP_DIR"/* docs/ 2>/dev/null || true
-          rm -rf "$BACKUP_DIR"
-
-          # Copy built files to master-branch
-          cp -r docs/.vuepress/dist/* master-branch/
-          cp CNAME master-branch/
-
-          # Update last build timestamp
-          CURRENT_TIME=$(date +%s)
-          echo "$CURRENT_TIME" > master-branch/.last_build_timestamp
-
-      - name: Commit and push to master branch
-        run: |
-          cd master-branch
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
-          git add .
-          git commit -m "auto deploy from develop, $(git describe --all --always --long)" || true
-          git push origin master
+      - name: 'Checkout codes' # 步骤一，获取仓库代码
+        uses: actions/checkout@v1
+      - name: 'Run baiduPush' # 步骤二，执行sh命令文件
+        run: npm install && npm run baiduPush # 运行目录是仓库根目录
