@@ -24,6 +24,9 @@ npm run build:win
 
 # Deploy to GitHub Pages
 npm run deploy
+
+# Push changes to develop branch
+git push origin develop
 ```
 
 > **Note**: The `dev` and `build` scripts use `export` (Unix), while `dev:win` and `build:win` use `set` (Windows). On Windows, always use the `:win` variants.
@@ -91,6 +94,20 @@ author:
 - Articles are organized under `docs/` using **numbered directory prefixes** (e.g., `01.编码`, `02.投资`) to control sidebar ordering.
 - The theme uses **auto-structured sidebars** (`sidebar: 'structuring'` in config). As long as files are placed in the correct directories, the sidebar and catalogue pages are generated automatically.
 - **Catalogue pages** (`00.目录页/`) use a special `Catalogue` page component and must set `article: false`.
+
+### Directory & Article Numbering Rules (创建目录及文章时)
+
+1. **目录编号规则**: 所有分类目录必须使用两位数字前缀（如 `01.`、`02.`），按数字顺序排列控制侧边栏显示顺序。
+   - 示例：`00.目录页/`, `01.编码/`, `02.投资/`, `03.技术/`
+
+2. **文章编号规则**: 
+   - 同一分类下的所有 Markdown 文件必须按数字序号命名（如 `01.flex 布局语法.md`, `02.flex 布局案例 -基础.md`）
+   - 使用两位数字前缀，不足补零（如 `06.`、`45.`, `70.`）
+   - 编号应反映文章在侧边栏中的显示顺序
+
+3. **目录及文件命名一致性**: 
+   - 每个子分类目录需有独立编号（如 `20.CSS/`, `30.HTML/`, `40.JavaScript/`）
+   - 该目录下所有文章的数字前缀应大于父级目录号，保持层级清晰
 
 ### Theme Configuration (`docs/.vuepress/config.ts`)
 
