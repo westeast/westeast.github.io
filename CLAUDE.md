@@ -109,6 +109,8 @@ author:
    - 每个子分类目录需有独立编号（如 `20.CSS/`, `30.HTML/`, `40.JavaScript/`）
    - 该目录下所有文章的数字前缀应大于父级目录号，保持层级清晰
 
+4. **文件名中不要包含日期**: 文章文件名不要使用 `YYYY-MM-DD-` 等日期前缀，保持简洁的数字序号+标题格式。
+
 ### Theme Configuration (`docs/.vuepress/config.ts`)
 
 Key configurations:
