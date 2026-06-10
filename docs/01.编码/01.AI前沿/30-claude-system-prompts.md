@@ -4,6 +4,14 @@
 > 作者：Khairallah AL-Awady  
 > 翻译：双语文章自动生成
 
+> 原文来源：[X @eng_khairallah1](https://x.com/eng_khairallah1/status/2063545603955785778)  
+> 作者：Khairallah AL-Awady  
+> 翻译：双语文章自动生成
+
+> 原文来源：[X @eng_khairallah1](https://x.com/eng_khairallah1/status/2063545603955785778)  
+> 作者：Khairallah AL-Awady  
+> 翻译：双语文章自动生成
+
 ---
 
 There is one thing that separates someone who gets generic AI output from someone who gets expert-level results every single time.
