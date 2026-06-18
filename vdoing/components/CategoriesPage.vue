@@ -3,8 +3,8 @@
     <MainLayout>
       <template #mainLeft>
         <CategoriesBar
-          v-if="$categoriesAndTags.categories.length"
-          :categoriesData="$categoriesAndTags.categories"
+          v-if="categoriesList.length"
+          :categoriesData="categoriesList"
           :category="category"
         />
         <PostList
@@ -22,8 +22,8 @@
       </template>
       <template #mainRight>
         <CategoriesBar
-          v-if="$categoriesAndTags.categories.length"
-          :categoriesData="$categoriesAndTags.categories"
+          v-if="categoriesList.length"
+          :categoriesData="categoriesList"
           :category="category"
         />
       </template>
@@ -36,6 +36,7 @@ import MainLayout from '@theme/components/MainLayout'
 import PostList from '@theme/components/PostList'
 import Pagination from '@theme/components/Pagination'
 import CategoriesBar from '@theme/components/CategoriesBar'
+import { loadCategories, loadPosts } from '../util/loadData'
 
 export default {
   data() {
@@ -43,17 +44,23 @@ export default {
       category: '',
       total: 0, // 总长
       perPage: 10, // 每页长
-      currentPage: 1// 当前页
+      currentPage: 1,// 当前页
+      categoriesData: [],  // 异步加载的分类数据
+      postsData: [],       // 异步加载的文章数据
+      groupPostsData: {}   // 分组数据
     }
   },
   components: { MainLayout, PostList, Pagination, CategoriesBar },
-  mounted() {
+  async mounted() {
+    // 异步加载数据
+    await this.loadData()
+
     const queryCategory = this.$route.query.category
     if (queryCategory) {
       this.category = queryCategory
-      this.total = this.$groupPosts.categories[queryCategory].length
+      this.total = this.groupPostsData.categories?.[queryCategory]?.length || 0
     } else {
-      this.total = this.$sortPosts.length
+      this.total = this.postsData.length
     }
     if (this.$route.query.p) {
       this.currentPage = Number(this.$route.query.p)
@@ -69,7 +76,34 @@ export default {
       }, 300)
     }
   },
+  computed: {
+    // 提供计算属性供模板使用
+    categoriesList() {
+      return this.categoriesData.length ? this.categoriesData : (this.$categoriesAndTags?.categories || [])
+    }
+  },
   methods: {
+    async loadData() {
+      try {
+        const categories = await loadCategories()
+        this.categoriesData = categories
+
+        // 构建 groupPosts 格式数据
+        this.groupPostsData.categories = {}
+        categories.forEach(cat => {
+          this.groupPostsData.categories[cat.name] = cat.posts
+        })
+
+        const posts = await loadPosts()
+        this.postsData = posts
+      } catch (e) {
+        console.error('Failed to load categories data:', e)
+        // 降级使用原有数据
+        this.categoriesData = this.$categoriesAndTags?.categories || []
+        this.groupPostsData = this.$groupPosts || {}
+        this.postsData = this.$sortPosts || []
+      }
+    },
     handlePagination(i) { // 分页
       this.currentPage = i
     }
@@ -78,9 +112,9 @@ export default {
     '$route.query.category'(category) {
       this.category = category ? decodeURIComponent(category) : ''
       if (this.category) {
-        this.total = this.$groupPosts.categories[this.category].length
+        this.total = this.groupPostsData.categories[this.category]?.length || 0
       } else {
-        this.total = this.$sortPosts.length
+        this.total = this.postsData.length
       }
       this.currentPage = 1
 

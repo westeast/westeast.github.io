@@ -3,8 +3,8 @@
     <MainLayout>
       <template #mainLeft>
         <TagsBar
-          v-if="$categoriesAndTags.tags.length"
-          :tagsData="$categoriesAndTags.tags"
+          v-if="tagsList.length"
+          :tagsData="tagsList"
           :tag="tag"
         />
         <PostList :currentPage="currentPage" :perPage="perPage" :tag="tag" />
@@ -18,8 +18,8 @@
       </template>
       <template #mainRight>
         <TagsBar
-          v-if="$categoriesAndTags.tags.length"
-          :tagsData="$categoriesAndTags.tags"
+          v-if="tagsList.length"
+          :tagsData="tagsList"
           :tag="tag"
         />
       </template>
@@ -32,6 +32,7 @@ import MainLayout from '@theme/components/MainLayout'
 import PostList from '@theme/components/PostList'
 import Pagination from '@theme/components/Pagination'
 import TagsBar from '@theme/components/TagsBar'
+import { loadTags, loadPosts } from '../util/loadData'
 
 export default {
   data() {
@@ -39,24 +40,56 @@ export default {
       tag: '',
       total: 0, // 总长
       perPage: 10, // 每页长
-      currentPage: 1// 当前页
+      currentPage: 1,// 当前页
+      tagsData: [],        // 异步加载的标签数据
+      postsData: [],       // 异步加载的文章数据
+      groupPostsData: {}   // 分组数据
     }
   },
   components: { MainLayout, PostList, Pagination, TagsBar },
-  mounted() {
+  async mounted() {
+    // 异步加载数据
+    await this.loadData()
+
     const queryTag = this.$route.query.tag
 
     if (queryTag) {
       this.tag = queryTag
-      this.total = this.$groupPosts.tags[queryTag].length
+      this.total = this.groupPostsData.tags?.[queryTag]?.length || 0
     } else {
-      this.total = this.$sortPosts.length
+      this.total = this.postsData.length
     }
     if (this.$route.query.p) {
       this.currentPage = Number(this.$route.query.p)
     }
   },
+  computed: {
+    tagsList() {
+      return this.tagsData.length ? this.tagsData : (this.$categoriesAndTags?.tags || [])
+    }
+  },
   methods: {
+    async loadData() {
+      try {
+        const tags = await loadTags()
+        this.tagsData = tags
+
+        // 构建 groupPosts 格式数据
+        this.groupPostsData.tags = {}
+        tags.forEach(tag => {
+          this.groupPostsData.tags[tag.name] = tag.posts
+        })
+
+        const posts = await loadPosts()
+        this.postsData = posts
+      } catch (e) {
+        console.error('Failed to load tags data:', e)
+        // 降级使用原有数据
+        this.tagsData = this.$categoriesAndTags?.tags || []
+        this.groupPostsData = this.$groupPosts || {}
+        this.postsData = this.$sortPosts || []
+      }
+    },
     handlePagination(i) { // 分页
       this.currentPage = i
     }
@@ -66,9 +99,9 @@ export default {
       this.tag = tag ? decodeURIComponent(tag) : ''
 
       if (this.tag) {
-        this.total = this.$groupPosts.tags[this.tag].length
+        this.total = this.groupPostsData.tags[this.tag]?.length || 0
       } else {
-        this.total = this.$sortPosts.length
+        this.total = this.postsData.length
       }
       this.currentPage = 1
 

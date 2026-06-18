@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { getRecentPosts } from '../util/loadData'
 
 export default {
   name: 'UpdateArticle',
@@ -46,21 +47,19 @@ export default {
   },
   data() {
     return {
-      posts: [],
-      currentPath: ''
+      recentPosts: [],  // 异步加载的最近文章
+      currentPath: '',
+      loading: true
     }
   },
   created() {
-    this.posts = this.$site.pages
     this.currentPath = this.$page.path
+    this.loadRecentPosts()
   },
   computed: {
     topPublishPosts() {
-      return this.$sortPostsByDate ? this.$sortPostsByDate.filter(post => {
-        const { path } = post
-        return path !== this.currentPath
-      }).slice(0, this.length) : []
-
+      // 使用异步加载的数据
+      return this.recentPosts.slice(0, this.length)
     },
     isShowArticle() {
       const { frontmatter } = this.$page
@@ -68,16 +67,34 @@ export default {
     }
   },
   methods: {
+    async loadRecentPosts() {
+      try {
+        this.recentPosts = await getRecentPosts(this.length + 1, this.currentPath)
+      } catch (e) {
+        console.error('Failed to load recent posts:', e)
+        // 降级：使用原有数据
+        if (this.$sortPostsByDate) {
+          this.recentPosts = this.$sortPostsByDate
+            .filter(post => post.path !== this.currentPath)
+            .slice(0, this.length)
+        }
+      } finally {
+        this.loading = false
+      }
+    },
     getNum(index) {
       return index < 9 ? '0' + (index + 1) : index + 1
     },
     getDate(item) {
-      return item.frontmatter.date ? item.frontmatter.date.split(" ")[0].slice(5, 10) : ''
+      // 兼容两种数据格式
+      const date = item.date || (item.frontmatter && item.frontmatter.date) || ''
+      return date ? date.split(" ")[0].slice(5, 10) : ''
     }
   },
   watch: {
     $route() {
       this.currentPath = this.$page.path
+      this.loadRecentPosts()
     }
   }
 }

@@ -246,8 +246,11 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
   ],
 
 
-  // 插件配置
+  // 自定义插件：生成数据 JSON 文件（用于增量编译优化）
   plugins: <UserPlugins>[
+    // 数据分离插件 - 暂时禁用以验证其他问题
+    // ['./plugins/data-json'],
+
     [
       "sitemap", // 网站地图
       {
